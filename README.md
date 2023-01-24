@@ -1,6 +1,6 @@
 # bpweatherap
 
-Masic weather app.
+Basic weather app made with Flutter.
 
 ## Getting Started
 
