@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -26,14 +27,24 @@ class WeatherAppState extends State<WeatherApp> {
   Color _backgroundColor = Colors.lightBlue;  // Variable to store the background color
 
   void _getWeather() async {
+    // Request location permission
+    final PermissionStatus permissionStatus = await PermissionHandler().checkPermissionStatus(PermissionGroup.location);
+    if (permissionStatus != PermissionStatus.granted) {
+      final Map<PermissionGroup, PermissionStatus> permissionResult = await PermissionHandler().requestPermissions([PermissionGroup.location]);
+      if (permissionResult[PermissionGroup.location] != PermissionStatus.granted) {
+        print('Location permission not granted');
+        return;
+      }
+    }
+
     http.Response response;
     // Get the device's location
     final Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
     // Make API call based on the selected weather provider
-    if (_provider == 'openweathermap') {
+    if (_provider == 'OpenWeatherMap') {
       response = await http.get(Uri.parse('https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}&appid=2dfebd201af8700d52988d9b1d7da5c1'));
-    } else if (_provider == 'wunderground') {
+    } else if (_provider == 'WUnderground') {
       response = await http.get(Uri.parse('https://api.wunderground.com/api/71e1e919b81642eba1e919b81662ebb0/conditions/q/${position.latitude},${position.longitude}.json'));
     } else {
       response = await http.get(Uri.parse('http://dataservice.accuweather.com/currentconditions/v1/YOUR_LOCATION_KEY?apikey=V690Q7rTKHqt1r0YYvyeIVQXruGs2nvz&geoposition=${position.latitude},${position.longitude}'));
