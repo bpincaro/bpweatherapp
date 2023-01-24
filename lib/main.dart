@@ -27,12 +27,11 @@ class WeatherAppState extends State<WeatherApp> {
   Color _backgroundColor = Colors.lightBlue;  // Variable to store the background color
 
   void _getWeather() async {
-    // Request location permission
-    final PermissionStatus permissionStatus = await PermissionHandler().checkPermissionStatus(PermissionGroup.location);
+    // Check and request for the location permission
+    final permissionStatus = await Permission.location.status;
     if (permissionStatus != PermissionStatus.granted) {
-      final Map<PermissionGroup, PermissionStatus> permissionResult = await PermissionHandler().requestPermissions([PermissionGroup.location]);
-      if (permissionResult[PermissionGroup.location] != PermissionStatus.granted) {
-        print('Location permission not granted');
+      final newPermissionStatus = await Permission.location.request();
+      if (newPermissionStatus != PermissionStatus.granted) {
         return;
       }
     }
