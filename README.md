@@ -2,15 +2,9 @@
 
 Basic weather app made with Flutter.
 
-## Getting Started
+## To-dos
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. need to recover the "LOCATION_KEY" to make the request to accuweather
+   1. Location key: http://dataservice.accuweather.com /locations/v1/cities/geoposition/search?apikey=ACCUWEATHER_API_KEY&q={lon,lat}
+   2. Forecast Data: http://dataservice.accuweather.com/currentconditions/v1/{location key}?apikey={api key}
+2. Deal with the API keys safely by using Firebase or package "flutter_config"

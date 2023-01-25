@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'config.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-void main() {
+Future<void> main() async {
+  await FlutterConfig.loadEnvVariables();
   runApp(MaterialApp(
       theme: ThemeData.light(),
       home: const WeatherApp(key: ValueKey("weather_app")),
@@ -42,11 +45,11 @@ class WeatherAppState extends State<WeatherApp> {
 
     // Make API call based on the selected weather provider
     if (_provider == 'OpenWeatherMap') {
-      response = await http.get(Uri.parse('https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}&appid=2dfebd201af8700d52988d9b1d7da5c1'));
+      response = await http.get(Uri.parse('https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}&units=${_unit}&appid=${Config.OPENWEATHERMAP_API_KEY}'));
     } else if (_provider == 'WUnderground') {
-      response = await http.get(Uri.parse('https://api.wunderground.com/api/71e1e919b81642eba1e919b81662ebb0/conditions/q/${position.latitude},${position.longitude}.json'));
+      response = await http.get(Uri.parse('https://api.wunderground.com/api/${Config.WUNDERGROUND_API_KEY}/conditions/q/${position.latitude},${position.longitude}.json'));
     } else {
-      response = await http.get(Uri.parse('http://dataservice.accuweather.com/currentconditions/v1/YOUR_LOCATION_KEY?apikey=V690Q7rTKHqt1r0YYvyeIVQXruGs2nvz&geoposition=${position.latitude},${position.longitude}'));
+      response = await http.get(Uri.parse('http://dataservice.accuweather.com/currentconditions/v1/YOUR_LOCATION_KEY?apikey=${Config.ACCUWEATHER_API_KEY}&geoposition=${position.latitude},${position.longitude}'));
     }
     var data = json.decode(response.body);
     setState(() {
